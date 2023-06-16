@@ -1,0 +1,8 @@
+# this is comment
+# all that comment gets removed by sed
+# but i need to write sed script
+
+# list needed packages delimited by ","
+# and use only one string for now
+vim,sl  # this comment gets deleted by sed too
+# by the way, have you heard about sl command? try it definitely

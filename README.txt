@@ -10,7 +10,7 @@ This is one of my projects for learning operating systems.
 Live-cd image builder
 Project name - /* todo();  */ ( because the word is built accordingly to C lang )
 
-Use scripts build_iso and run_iso in ./scripts/ directory
+Use build_iso and run_iso scripts
 for building and running image correspondingly
 
 Packages, you probably may need:

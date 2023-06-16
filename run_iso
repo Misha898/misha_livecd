@@ -16,7 +16,7 @@ Usage:
     run_iso [options]
 
 Options:
-    No options but -h for yet now
+    No options but -h and -i for yet now
     Contribute to the project!!!
     *sounds of terrifying keystrokes*
 
@@ -34,6 +34,7 @@ run_image() {
     qemu-system-x86_64 -cdrom ./${image} -net user -daemonize
 }
 
+#arguments parsing
 if (( ${#@} > 0 )); then
     while getopts 'hi:' flag; do
         case "$flag" in
