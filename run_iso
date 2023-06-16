@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# My tool just for launching and debugging my simple live image
-# Seems like it don't need any comments for now due to self-documented and simple design
+# My tool for launching and debugging live image
+# Seems like it don't need many comments for now due to self-documented and simple design
 
 set -eu
 
@@ -28,9 +28,7 @@ EOF
 }
 
 run_image() {
-    # just imagine how someday there will be
-    # a powerfull command with various options
-
+    #pretty simple for now
     qemu-system-x86_64 -cdrom ./${image} -net user -daemonize
 }
 

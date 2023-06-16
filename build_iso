@@ -6,9 +6,6 @@
 # https://live-team.pages.debian.net/live-manual/html/live-manual/toc.en.html
 # Though it's very simple and you can learn the basics by reading the source
 
-# Why do you even need documentation? Everything in the source
-#                                       (c) Linus Torvalds
-
 # that's for error-catching mainly
 set -eu
 
@@ -22,14 +19,13 @@ VERS=${LINUX:6:1} # it gets major number in version
 
 # maybe invoke this func on EXIT using trap?
 mytrap() { 
-    rm -rf ${BASEDIR}/build
+    rm -rf ${BASEDIR}/binary
 }
 
 # function for fetching and building kernel
 # i don't use this kernel in my .iso yet
 handle_kernel() {
-    # i use subshell so directory in parent shell won't change.
-    # so much testing because it may fail in any place
+    # i use subshell so directory in parent shell won't change (just for fun)
     (
     echo "retrieving and building sources"
     test -d sources || mkdir sources
@@ -46,13 +42,11 @@ handle_kernel() {
 
 make_rootfs() {
     echo "making rootfs"
-
     #this sed removes all comments in config file
     local pack_list=$(sed -e 's/\s*#.*//; /^$/ d' packages_config)
+    #download image
     sudo debootstrap --include=dialog,dbus,$pack_list --arch=amd64 stable chroot_dir
-
-    # there should be a way not to use sudo and
-    # don't launch script as root I believe
+    #set up everything in chrooted environment
     sudo chroot chroot_dir/ /bin/bash -c "\
         mount none -t proc /proc; \
         mount none -t sysfs /sys; \
@@ -73,26 +67,19 @@ make_iso_image() {
     echo "making iso image"
     cd $BASEDIR # just in case
     mkdir -p binary/live && mkdir -p binary/isolinux
-
-    # test self-compiled kernel later
+    # I'll test self-compiled kernel later maybe
     # it may be not so straitforward as it seems at the first glance
     #cp sources/${LINUX}/arch/x86/boot/bzImage binary/live/vmlinuz
-
-    # science - like magic but real 
-    #                       (c) Random quotes from my head
 
     # copying kernel and ramfs
     cp chroot_dir/boot/vmlinuz-6.1.0-9-amd64 binary/live/vmlinuz
     cp chroot_dir/boot/initrd.img-6.1.0-9-amd64 binary/live/initrd
-
     # making image
     mksquashfs chroot_dir binary/live/filesystem.squashfs -comp xz -e boot
-
     # aux files
     cp /usr/lib/ISOLINUX/isolinux.bin binary/isolinux/
     cp /usr/lib/syslinux/modules/bios/* binary/isolinux/
     cp .isolinux.cfg binary/isolinux/isolinux.cfg
-    
     # make .iso file itself
     xorriso -as mkisofs -r -J -joliet-long -l -cache-inodes \
         -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin \
@@ -102,10 +89,6 @@ make_iso_image() {
 
 }
 
-# Have you read README?
-# The World is built accordingly to C language
-#                           (c) Andrew Tanenbaum
-# So main() there is
 main() {
     test -f sources/${LINUX}/arch/x86/boot/bzImage || handle_kernel
     test -d chroot_dir || make_rootfs
