@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # My tool just for launching and debugging my simple live image
-# Seems like it don't need any comments for now due to simple design
+# Seems like it don't need any comments for now due to self-documented and simple design
 
 set -eu
 
@@ -29,9 +29,9 @@ EOF
 
 run_image() {
     # just imagine how someday there will be
-    # powerfull command with various options
+    # a powerfull command with various options
 
-    qemu-system-x86_64 -cdrom ./misha.iso -net user -daemonize
+    qemu-system-x86_64 -cdrom ./${image} -net user -daemonize
 }
 
 if (( ${#@} > 0 )); then
